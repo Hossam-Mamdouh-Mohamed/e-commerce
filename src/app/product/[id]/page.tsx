@@ -7,6 +7,9 @@ export default async function ProductDetails({ params }: { params: { id: string 
     const product = await getProductDetails(id);
     
     return (
+        <>
         <div>{product.title}</div>
+        <div>{product.description}</div>
+        </>
     )
 }
