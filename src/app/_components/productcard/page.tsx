@@ -5,9 +5,9 @@ export default function ProductCard({ product }: { product: Product }) {
     const rating = Math.round(product.ratingsAverage || 0)
 
     return (
-        <div className="flex items-center justify-center p-4">
+        <div className="flex items-center justify-center">
             <div className="w-80 rounded-lg border border-blue-200 p-4 shadow-md">
-                <Link href={`/product/${product._id}`} className="block">
+                <Link href={`/products/${product._id}`} className="block">
                     <div className="relative">
                         {product.priceAfterDiscount != null && (
                             <span className="absolute left-2 top-2 rounded-full bg-orange-400 px-2 py-1 text-xs font-semibold text-white">
@@ -26,7 +26,7 @@ export default function ProductCard({ product }: { product: Product }) {
                         </button>
 
                         <div>
-                            <img src={product.images[0]} alt="Product Image" className="h-[270px] w-full object-contain" />
+                            <img src={product.images[0]} alt="Product Image" className="h-67.5 w-full object-contain" />
                         </div>
                     </div>
 
