@@ -3,6 +3,7 @@ import "./globals.css";
 import Navbar from "./_components/navbar/page";
 import Footer from "./_components/footer/page";
 import { Exo } from "next/font/google";
+import StoreFeatures from "./_components/StoreFeatures/page";
 
 const exo = Exo({
   variable: "--font-exo",
@@ -20,6 +21,7 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
       <body className="min-h-full flex flex-col">
         <Navbar />
         {children}
+        <StoreFeatures />
         <Footer />
       </body>
     </html>

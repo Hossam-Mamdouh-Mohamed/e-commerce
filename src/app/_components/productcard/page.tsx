@@ -26,12 +26,15 @@ export default function ProductCard({ product }: { product: Product }) {
                         </button>
 
                         <div>
-                            <img src={product.images[0]} alt="Product Image" className="h-67.5 w-full object-contain" />
+                            <img src={product.imageCover} alt="Product Image" className="h-67.5 w-full object-contain" />
                         </div>
                     </div>
 
                     <div className="mt-4">
-                        <h3 className="text-base font-medium text-gray-800">
+                        <p className="text-xs font-medium text-gray-600">
+                            {product.category.name}
+                        </p>
+                        <h3 className="text-base font-medium text-gray-800 line-clamp-2 h-12">
                             {product.title}
                         </h3>
                         <p className="text-xs font-medium uppercase text-green-600">

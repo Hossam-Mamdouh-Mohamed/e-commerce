@@ -1,10 +1,27 @@
 import React from 'react'
-import { getProducts } from '@/services/productsApi';
+import { getProducts, getProductsbyBrand, getProductsbyCategory } from '@/services/productsApi';
 import ProductCard from '../_components/productcard/page';
 
-export default async function AllProduct() {
+export default async function AllProduct({searchParams}: {
+    searchParams: Promise<{ [key: string]: string | string[] | undefined }>
+}) {
 
-    const products = await getProducts();
+    const subcategory = (await searchParams).subcategory;
+    const brand =(await searchParams).brand;
+    let products = [];
+
+    if (typeof subcategory === 'string') {
+        products = await getProductsbyCategory(subcategory);
+        console.log(products)
+    }
+    else if(typeof brand ==='string')
+    {
+        products = await getProductsbyBrand(brand);
+        console.log(products) 
+    }
+    else {
+         products = await getProducts();
+    }
 
     return (
         <>
@@ -23,8 +40,8 @@ export default async function AllProduct() {
                     </div>
                 </div>
             </div>
-            <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8'>
-                <span className='block py-6 text-gray-500'>Showing {products.length} products</span>
+            <div className='mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-5'>
+                <span className='block pb-6 text-gray-500'>Showing {products.length} products</span>
                 <div className="grid grid-cols-1 gap-4 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4">
                     {products.map((product) => (
                         <ProductCard key={product._id} product={product} />

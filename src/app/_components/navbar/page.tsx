@@ -50,7 +50,7 @@ export default function Navbar() {
 
           <Button variant="outline" className="hidden sm:inline-flex">
             <User className="mr-2 size-4" />
-            Sign in
+            <a href="login">Sign in</a>
           </Button>
 
           <Button className="hidden sm:inline-flex">Create account</Button>

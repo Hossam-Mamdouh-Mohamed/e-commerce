@@ -11,7 +11,7 @@ export default async function SubCategoies({ params }: { params: { id: string } 
   const category = await getSpecificCategory(id);
   return (
     <>
-      <div className="bg-gradient-to-r from-[#22c55e] to-[#4ade80] text-white">
+      <div className="bg-linear-to-r from-[#22c55e] to-[#4ade80] text-white">
         <div className="container mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 py-15">
           <nav className="flex items-center gap-2 text-sm text-white/70 mb-6 flex-wrap">
             <a className="text-white/40" href="/">Home</a>
