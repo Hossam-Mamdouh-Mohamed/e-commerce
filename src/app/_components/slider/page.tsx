@@ -16,9 +16,7 @@ type SliderType = {
 }
 export default function Slider({ spaceBetween, slidesPerView, pageList }: SliderType) {
     return (
-        <Swiper
-            modules={[Navigation, Pagination]}
-            navigation
+        <Swiper modules={[Navigation, Pagination]} navigation
             pagination={{ clickable: true }}
             loop={true}
             spaceBetween={spaceBetween}

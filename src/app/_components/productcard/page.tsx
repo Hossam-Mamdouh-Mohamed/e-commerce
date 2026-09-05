@@ -1,5 +1,6 @@
 import Link from 'next/link'
 import { Product } from '../../types/products'
+import { FaStar } from 'react-icons/fa'
 
 export default function ProductCard({ product }: { product: Product }) {
     const rating = Math.round(product.ratingsAverage || 0)
@@ -14,7 +15,7 @@ export default function ProductCard({ product }: { product: Product }) {
                                 {Math.round(((product.price - product.priceAfterDiscount) / product.price) * 100)}% OFF
                             </span>
                         )}
-
+                        
                         <button
                             type="button"
                             className="absolute right-2 top-2 flex h-8 w-8 items-center justify-center rounded-full bg-white shadow"
@@ -43,15 +44,11 @@ export default function ProductCard({ product }: { product: Product }) {
 
                         <div className="mt-1 flex items-center space-x-1 text-sm text-orange-500">
                             {[1, 2, 3, 4, 5].map((star) => (
-                                <svg
+                                <FaStar
                                     key={star}
-                                    xmlns="http://www.w3.org/2000/svg"
-                                    className={`h-4 w-4 ${star <= rating ? "text-orange-500" : "text-gray-300"}`}
-                                    fill="currentColor"
-                                    viewBox="0 0 20 20"
-                                >
-                                    <path d="M9.049 2.927C9.349 2.2 10.651 2.2 10.951 2.927l1.558 3.779 4.004.37c.85.079 1.194 1.139.572 1.724l-2.922 2.658.87 3.917c.181.816-.68 1.448-1.419 1.034L10 13.01l-3.614 1.96c-.74.414-1.6-.218-1.419-1.034l.87-3.917-2.922-2.658c-.622-.585-.278-1.645.572-1.724l4.004-.37L9.049 2.927z" />
-                                </svg>
+                                    className={`h-6 w-6 ${star <= rating ? "text-orange-500" : "text-gray-300"
+                                        }`}
+                                />
                             ))}
                             <span className="text-sm text-gray-600">
                                 {product.ratingsQuantity > 0 ? product.ratingsAverage.toFixed(1) : "No ratings"}
@@ -59,9 +56,9 @@ export default function ProductCard({ product }: { product: Product }) {
                             <span className="text-sm text-gray-600">({product.ratingsQuantity})</span>
                         </div>
 
-                        <div className="mt-2 flex items-end justify-between">
+                        <div className="mb-2 flex items-center justify-between">
                             <div className="mt-2 flex items-baseline space-x-2">
-                                <span className="text-xl font-semibold text-blue-600">
+                                <span className="text-xl font-semibold text-green-600">
                                     {(product.priceAfterDiscount ?? product.price).toFixed(2)}$
                                 </span>
 
@@ -71,19 +68,14 @@ export default function ProductCard({ product }: { product: Product }) {
                                     </span>
                                 )}
                             </div>
+                            <div>
+                                <button type="button" className="flex h-10 w-10 items-center justify-center rounded-full bg-green-600 text-white shadow" aria-label="Add to cart">
+                                    <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
+                                </button>
+                            </div>
                         </div>
                     </div>
                 </Link>
-
-                <div className="mt-3 flex justify-end">
-                    <button
-                        type="button"
-                        className="flex h-10 w-10 items-center justify-center rounded-full bg-blue-600 text-white shadow"
-                        aria-label="Add to cart"
-                    >
-                        <svg xmlns="http://www.w3.org/2000/svg" width={20} height={20} viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth={2} strokeLinecap="round" strokeLinejoin="round" className="icon icon-tabler icons-tabler-outline icon-tabler-shopping-cart"><path stroke="none" d="M0 0h24v24H0z" fill="none" /><path d="M6 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 19m-2 0a2 2 0 1 0 4 0a2 2 0 1 0 -4 0" /><path d="M17 17h-11v-14h-2" /><path d="M6 5l14 1l-1 7h-13" /></svg>
-                    </button>
-                </div>
             </div>
         </div>
     )
