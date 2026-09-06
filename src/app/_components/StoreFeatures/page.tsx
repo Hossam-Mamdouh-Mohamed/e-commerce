@@ -4,7 +4,7 @@ import { FaArrowRotateLeft, FaShieldHalved } from 'react-icons/fa6'
 
 export default function StoreFeatures() {
     return (
-        <div className='bg-[#f0fdf4] py-6'>
+        <div className='bg-[#f0fdf4] py-6 mt-5'>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">
                 <div className="grid sm:grid-cols-2 lg:grid-cols-4 gap-6">
                     <div className="flex items-center gap-3">
