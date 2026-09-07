@@ -1,6 +1,6 @@
 import React from 'react'
 import { getProducts, getProductsbyBrand, getProductsbyCategory } from '@/services/productsApi';
-import ProductCard from '../_components/productcard/page';
+import ProductCard from '@/components/product/ProductCard';
 
 export default async function AllProduct({searchParams}: {
     searchParams: Promise<{ [key: string]: string | string[] | undefined }>

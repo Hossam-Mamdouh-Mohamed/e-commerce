@@ -1,4 +1,4 @@
-import { Brand } from '@/app/types/products'
+import { Brand } from '@/types/product'
 import React from 'react'
 import { FaArrowRight } from 'react-icons/fa'
 

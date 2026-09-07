@@ -1,4 +1,4 @@
-import { Brand} from "@/app/types/products";
+import { Brand} from "@/types/product";
 import { error } from "console";
 import { promises } from "dns";
 

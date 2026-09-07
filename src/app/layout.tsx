@@ -1,9 +1,9 @@
 import type { Metadata } from "next";
 import "./globals.css";
-import Navbar from "./_components/navbar/page";
-import Footer from "./_components/footer/page";
+import Navbar from "@/components/layout/Navbar";
+import Footer from "@/components/layout/Footer";
 import { Exo } from "next/font/google";
-import StoreFeatures from "./_components/StoreFeatures/page";
+import StoreFeatures from "@/components/layout/StoreFeatures";
 
 const exo = Exo({
   variable: "--font-exo",

@@ -1,10 +1,10 @@
 import React from 'react'
-import CategoryCard from '../categorycard/page';
+import CategoryCard from '@/components/category/CategoryCard';
 import { getCategories } from '@/services/categoriesApi'
-import { Category } from '@/app/types/products';
+import { Category } from '@/types/product';
 import { FaArrowRight } from 'react-icons/fa';
 
-export default async function Categories() {
+export default async function CategoriesSection() {
 
   const categories = await getCategories();
   return (

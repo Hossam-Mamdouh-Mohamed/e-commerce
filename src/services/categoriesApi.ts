@@ -1,4 +1,4 @@
-import { Category, Root, Subcategory } from "@/app/types/products";
+import { Category, Root, Subcategory } from "@/types/product";
 import { error } from "console";
 import { promises } from "dns";
 

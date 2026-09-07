@@ -1,4 +1,4 @@
-import { Category } from '@/app/types/products'
+import { Category } from '@/types/product'
 import React from 'react'
 
 export default function CategoryCard({ Category }: { Category: Category }) {

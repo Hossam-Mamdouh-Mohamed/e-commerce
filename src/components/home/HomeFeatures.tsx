@@ -2,7 +2,7 @@ import React from 'react'
 import { FaHeadset, FaTruck } from 'react-icons/fa'
 import { FaArrowRotateLeft, FaShieldHalved } from 'react-icons/fa6'
 
-export default function HomeStoreFeatures() {
+export default function HomeFeatures() {
     return (
         <div className='bg-gray-50 py-6'>
             <div className="mx-auto max-w-7xl px-4 sm:px-6 lg:px-8">

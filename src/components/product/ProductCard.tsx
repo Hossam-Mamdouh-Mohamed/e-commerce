@@ -1,5 +1,5 @@
 import Link from 'next/link'
-import { Product } from '../../types/products'
+import { Product } from '@/types/product'
 import { FaHeart, FaRegEye, FaRegHeart, FaStar } from 'react-icons/fa'
 import { FaArrowsRotate } from 'react-icons/fa6'
 

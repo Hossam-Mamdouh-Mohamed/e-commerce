@@ -1,7 +1,7 @@
 import { getCategories } from '@/services/categoriesApi'
 import React from 'react'
 import { FaArrowRight, FaLayerGroup, FaTags } from 'react-icons/fa';
-import CategoryCardDetail from '../_components/categoryCardDetail/page';
+import CategoryDetailCard from '@/components/category/CategoryDetailCard';
 
 export default async function Categories() {
 
@@ -27,7 +27,7 @@ export default async function Categories() {
       </div>
       <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 mx-auto max-w-7xl px-4 sm:px-6 lg:px-8 my-5">
         {categories.map((Category) => (
-          <CategoryCardDetail key={Category._id} Category={Category} />
+            <CategoryDetailCard key={Category._id} Category={Category} />
         ))}
       </div>
     </>

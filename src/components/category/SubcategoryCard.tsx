@@ -1,10 +1,8 @@
 import React from 'react'
-import CategoryCard from '../categorycard/page';
-import { getCategories } from '@/services/categoriesApi'
-import { Category, Subcategory } from '@/app/types/products';
+import { Subcategory } from '@/types/product';
 import { FaArrowRight, FaFolderOpen } from 'react-icons/fa';
 
-export default async function SubCategory({ subCategory }: { subCategory: Subcategory }) {
+export default function SubcategoryCard({ subCategory }: { subCategory: Subcategory }) {
 
   return (
     <a className="w-full bg-white rounded-lg p-4 group shadow-sm hover:-translate-y-1 transition-transform duration-300 group cursor-pointer hover:text-green-600" href={`/products?subcategory=${subCategory._id}`}>

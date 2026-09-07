@@ -1,5 +1,4 @@
-import CategoryCard from '@/app/_components/categorycard/page';
-import SubCategory from '@/app/_components/subCategories/page';
+import SubcategoryCard from '@/components/category/SubcategoryCard';
 import { getSpecificCategory, getSubCategories } from '@/services/categoriesApi';
 import React from 'react'
 import { FaArrowLeft, FaArrowRight } from 'react-icons/fa';
@@ -38,7 +37,7 @@ export default async function SubCategoies({ params }: { params: { id: string } 
         <span className='font-bold text-2xl'>{subCategoies.length} Subcategories in {category.name}</span>
         <div className="grid grid-cols-2 gap-4 md:grid-cols-3 lg:grid-cols-5 py-5">
           {subCategoies.map((subCategory) => (
-            <SubCategory key={subCategory._id} subCategory={subCategory} />
+            <SubcategoryCard key={subCategory._id} subCategory={subCategory} />
           ))}
         </div>
       </div>

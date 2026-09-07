@@ -1,7 +1,7 @@
-import { Category } from '@/app/types/products'
+import { Category } from '@/types/product'
 import React from 'react'
 
-export default function CategoryCardDetail({ Category }: { Category: Category }) {
+export default function CategoryDetailCard({ Category }: { Category: Category }) {
   return (
     <a className="bg-white rounded-lg p-4 group text-center shadow-sm hover:-translate-y-2 transition-transform duration-300 group cursor-pointer hover:text-green-600 " href={'/categories/' + Category._id}>
       <div className="mb-3 h-48 w-full overflow-hidden rounded-2xl">

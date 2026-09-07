@@ -14,7 +14,7 @@ type SliderType = {
     slidesPerView: number,
     pageList: string[]
 }
-export default function Slider({ spaceBetween, slidesPerView, pageList }: SliderType) {
+export default function HeroSlider({ spaceBetween, slidesPerView, pageList }: SliderType) {
     return (
         <Swiper modules={[Navigation, Pagination]} navigation
             pagination={{ clickable: true }}

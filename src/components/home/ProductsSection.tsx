@@ -1,8 +1,8 @@
 import React from 'react'
 import { getProducts } from '@/services/productsApi'
-import ProductCard from '../../productcard/page'
+import ProductCard from '@/components/product/ProductCard'
 
-export default async function Products() {
+export default async function ProductsSection() {
 
   const products = await getProducts();
 

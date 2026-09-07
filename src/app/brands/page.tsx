@@ -1,6 +1,6 @@
 import React from 'react'
 import { FaTags } from 'react-icons/fa';
-import BrandCard from '../_components/brandcard/page';
+import BrandCard from '@/components/brand/BrandCard';
 import { getBrands } from '@/services/brandsApi';
 
 export default async function Brands() {

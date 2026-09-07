@@ -1,4 +1,4 @@
-import { Product, Root } from '../../src/app/types/products';
+import { Product, Root } from '@/types/product';
 
 export async function getProducts(): Promise<Product[]> {
 
