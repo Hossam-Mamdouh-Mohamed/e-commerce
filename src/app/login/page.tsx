@@ -8,7 +8,11 @@ import { FaShieldHalved } from 'react-icons/fa6'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Field } from '@base-ui/react/field'
-import { SignIn } from '@/services/authApi'
+import { SignIn } from '@/services/auth.actions'
+import { toast } from "@/components/ui/toast"
+
+
+export type UserSignIn = z.infer<typeof formSchema>;
 
 const formSchema = z.object({
     email: z.string().trim().min(1, "Please enter your email").email("Please enter a valid email address"),
@@ -24,13 +28,32 @@ export default function Login() {
         defaultValues: {
             email: "",
             password: "",
-            rememberMe:false
+            rememberMe: false
         },
     })
 
-   async function onSubmit(data: z.infer<typeof formSchema>) {
-       const response = await SignIn(data);
-       console.log(response)
+    async function onSubmit(data: UserSignIn) {
+        try {
+            const result = await SignIn(data);
+
+            if (result.success) {
+                toast.add({
+                    type: "success",
+                    description: "Signed In Successfully",
+                });
+                return;
+            }
+
+            toast.add({
+                type: "error",
+                description: result.message,
+            });
+        } catch {
+            toast.add({
+                type: "error",
+                description: "Unable to sign in right now. Please try again.",
+            });
+        }
     }
     return (
         <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-30">
