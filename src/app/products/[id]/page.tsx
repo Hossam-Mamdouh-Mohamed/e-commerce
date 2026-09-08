@@ -1,8 +1,9 @@
 import React from 'react'
 import { getProductDetails } from '@/services/productsApi'
-import { FaBolt, FaRegHeart, FaShare, FaStar } from 'react-icons/fa';
+import { FaBolt, FaCheck, FaRegHeart, FaShare, FaStar } from 'react-icons/fa';
 import { Span } from 'next/dist/trace';
-import { FaCartShopping } from 'react-icons/fa6';
+import { FaArrowRotateLeft, FaCartShopping, FaShareNodes, FaShieldHalved, FaTruckFast } from 'react-icons/fa6';
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 
 export default async function ProductDetails({ params }: { params: { id: string } }) {
 
@@ -50,7 +51,7 @@ export default async function ProductDetails({ params }: { params: { id: string 
                     )}
                     <hr />
                     <p className='text-gray-700 py-5'>{product.description}</p>
-                    <div className='flex justify-between bg-gray-200 rounded-2xl p-3'>
+                    <div className='flex justify-between items-center bg-gray-200 rounded-2xl p-3'>
                         <span>Total Price:</span>
                         <span className='text-2xl text-green-600 font-extrabold'>{product.priceAfterDiscount?.toFixed(2) ?? product.price.toFixed(2)} EGP</span>
                     </div>
@@ -66,18 +67,124 @@ export default async function ProductDetails({ params }: { params: { id: string 
                         </button>
                     </div>
                     <div className="flex gap-2 py-5">
-                        <button className="flex-1 items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white hover:bg-green-600">
+                        <button className="flex flex-1 group items-center justify-center gap-2 rounded-lg border hover:text-green-700 border-gray-400 px-4 py-2.5 font-medium text-gray-800 hover:border-green-300 shadow-sm">
                             <FaRegHeart />
                             Add to Wishlist
                         </button>
 
-                        <button className="rounded-lg bg-black px-4 py-2.5 font-medium text-white hover:bg-gray-800">
-                          <FaShare />
+                        <button className="rounded-lg group border border-gray-400  px-4 py-2.5 font-medium text-white hover:border-green-500">
+                            <FaShareNodes className='text-gray-700 group-hover:text-green-600' />
                         </button>
+                    </div>
+                    <hr />
+                    <div className="border-t border-gray-100 pt-6">
+                        <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
+                                    <FaTruckFast />
+                                </div>
+                                <div>
+                                    <h4 className="font-medium text-gray-900 text-sm">Free Delivery</h4>
+                                    <p className="text-xs text-gray-500">Orders over $50</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
+                                    <FaArrowRotateLeft />
+                                </div>
+                                <div>
+                                    <h4 className="font-medium text-gray-900 text-sm">30 Days Return</h4>
+                                    <p className="text-xs text-gray-500">Money back</p>
+                                </div>
+                            </div>
+                            <div className="flex items-center gap-3">
+                                <div className="h-10 w-10 bg-green-100 text-green-600 rounded-full flex items-center justify-center shrink-0">
+                                    <FaShieldHalved />
+                                </div>
+                                <div>
+                                    <h4 className="font-medium text-gray-900 text-sm">Secure Payment</h4>
+                                    <p className="text-xs text-gray-500">100% Protected</p>
+                                </div>
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+            <div className='rounded-2xl border border-gray-200 shadow-sm my-10'>
+                <Tabs defaultValue="description">
+                    <TabsList>
+                        <TabsTrigger value="description">
+                            Product Details
+                        </TabsTrigger>
 
+                        <TabsTrigger value="reviews">
+                            Reviews
+                        </TabsTrigger>
+
+                        <TabsTrigger value="shipping">
+                            Shipping & Returns
+                        </TabsTrigger>
+
+                    </TabsList>
+                    <div className='p-5'>
+                        <TabsContent value="description">
+                            <h3 className='text-2xl font-bold'>About this Product</h3>
+                            <p className='py-3 font-bold text-gray-600'>{product.description}</p>
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                                <div className='bg-gray-100 rounded-2xl p-3'>
+                                    <p className='font-medium text-gray-900 mb-3'>Product Information</p>
+                                    <div className='flex justify-between'>
+                                        <span className='text-gray-500'>Category</span>
+                                        <span>{product.category.name}</span>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <span className='text-gray-500'>Subcategory</span>
+                                        <span>{product.subcategory.map((subcategory) => subcategory.name).join(', ')}</span>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <span className='text-gray-500'>Brand</span>
+                                        <span>{product.brand.name}</span>
+                                    </div>
+                                    <div className='flex justify-between'>
+                                        <span className='text-gray-500'>Items Sold</span>
+                                        <span>{product.sold}+ sold</span>
+                                    </div>
+                                </div>
+                                <div className='bg-gray-100 rounded-2xl p-3'>
+                                    <p className='font-medium text-gray-900 mb-3'>Key Features</p>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Premium Quality Product</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>100% Authentic Guarantee</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Fast & Secure Packaging</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Quality Tested</span>
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
+                        </TabsContent>
+
+                        <TabsContent value="reviews">
+                           <div>
+                            
+                           </div>
+                        </TabsContent>
+                        <TabsContent value="shipping">
+                            shipping and returns
+                        </TabsContent>
+                    </div>
+                </Tabs>
+            </div>
         </div>
     )
 }
