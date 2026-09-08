@@ -12,7 +12,7 @@ export default function ProductCard({ product }: { product: Product }) {
                 {/* <Link href={`/products/${product._id}`} className="block"> */}
                 <div className="relative">
                     {product.priceAfterDiscount != null && (
-                        <span className="absolute left-2 top-2 rounded-full bg-orange-400 px-2 py-1 text-xs font-semibold text-white">
+                        <span className="absolute left-2 top-2 rounded-full bg-yellow-400 px-2 py-1 text-xs font-semibold text-white">
                             {Math.round(((product.price - product.priceAfterDiscount) / product.price) * 100)}% OFF
                         </span>
                     )}
@@ -46,11 +46,11 @@ export default function ProductCard({ product }: { product: Product }) {
                         {product.brand.name}
                     </p>
 
-                    <div className="mt-1 flex items-center space-x-1 text-sm text-orange-500">
+                    <div className="mt-1 flex items-center space-x-1 text-sm text-yellow-500">
                         {[1, 2, 3, 4, 5].map((star) => (
                             <FaStar
                                 key={star}
-                                className={`h-6 w-6 ${star <= rating ? "text-orange-500" : "text-gray-300"
+                                className={`h-6 w-6 ${star <= rating ? "text-yellow-500" : "text-gray-300"
                                     }`}
                             />
                         ))}
