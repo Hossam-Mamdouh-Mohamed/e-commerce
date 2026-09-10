@@ -1,6 +1,6 @@
 import React from 'react'
 import { getProductDetails } from '@/services/productsApi'
-import { FaBolt, FaCheck, FaRegHeart, FaShare, FaStar } from 'react-icons/fa';
+import { FaBolt, FaBox, FaCheck, FaRegHeart, FaShare, FaStar, FaTruck } from 'react-icons/fa';
 import { Span } from 'next/dist/trace';
 import { FaArrowRotateLeft, FaCartShopping, FaShareNodes, FaShieldHalved, FaTruckFast } from 'react-icons/fa6';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
@@ -112,19 +112,45 @@ export default async function ProductDetails({ params }: { params: { id: string 
             </div>
             <div className='rounded-2xl border border-gray-200 shadow-sm my-10'>
                 <Tabs defaultValue="description">
-                    <TabsList>
-                        <TabsTrigger value="description">
+                    <TabsList className="h-auto gap-2 bg-gray-100 p-2">
+                        <TabsTrigger
+                            value="description"
+                            className="
+                gap-2 rounded-lg px-4 py-2
+                data-[state=active]:bg-green-600
+                data-[state=active]:text-white
+                data-[state=active]:shadow-sm
+            "
+                        >
+                            <FaBox className="text-sm" />
                             Product Details
                         </TabsTrigger>
 
-                        <TabsTrigger value="reviews">
+                        <TabsTrigger
+                            value="reviews"
+                            className="
+                gap-2 rounded-lg px-4 py-2
+                data-[state=active]:bg-green-600
+                data-[state=active]:text-white
+                data-[state=active]:shadow-sm
+            "
+                        >
+                            <FaStar className="text-sm" />
                             Reviews
                         </TabsTrigger>
 
-                        <TabsTrigger value="shipping">
+                        <TabsTrigger
+                            value="shipping"
+                            className="
+                gap-2 rounded-lg px-4 py-2
+                data-[state=active]:bg-green-600
+                data-[state=active]:text-white
+                data-[state=active]:shadow-sm
+            "
+                        >
+                            <FaTruck className="text-sm" />
                             Shipping & Returns
                         </TabsTrigger>
-
                     </TabsList>
                     <div className='p-5'>
                         <TabsContent value="description">
@@ -175,12 +201,63 @@ export default async function ProductDetails({ params }: { params: { id: string 
                         </TabsContent>
 
                         <TabsContent value="reviews">
-                           <div>
-                            
-                           </div>
+                            <div>
+
+                            </div>
                         </TabsContent>
-                        <TabsContent value="shipping">
-                            shipping and returns
+                        <TabsContent value="shipping" >
+                            <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
+                                <div className='bg-linear-to-br from-[#f0fdf4] to-[#dcfce7] rounded-lg p-5'>
+                                    <div className='flex gap-3 py-5 items-center'>
+                                        <div className='rounded-full bg-green-600 p-3'>
+                                            <FaTruck className="text-xl text-white" />
+                                        </div>
+                                        <h4 className="font-semibold text-gray-900">Shipping Information</h4>
+                                    </div>
+                                    <div className='flex gap-3 items-center my-1'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Free shipping on orders over $50</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Standard delivery: 3-5 business days</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Express delivery available (1-2 business days)</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Track your order in real-time</span>
+                                    </div>
+                                </div>
+                                <div className='bg-linear-to-br from-[#f0fdf4] to-[#dcfce7] rounded-lg p-5'>
+                                    <div className='flex gap-3 py-5 items-center'>
+                                        <div className='rounded-full bg-green-600 p-3'>
+                                            <FaArrowRotateLeft className="text-xl text-white" />
+                                        </div>
+                                        <h4 className="font-semibold text-gray-900">Returns & Refunds</h4>
+                                    </div>
+                                    <div className='flex gap-3 items-center my-1'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>30-day hassle-free returns</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Full refund or exchange available</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Free return shipping on defective items</span>
+                                    </div>
+                                    <div className='flex gap-3 items-center'>
+                                        <span className='text-green-600'><FaCheck /></span>
+                                        <span className='text-gray-600'>Easy online return process</span>
+                                    </div>
+                                </div>
+                                <div>
+                                </div>
+                            </div>
                         </TabsContent>
                     </div>
                 </Tabs>
