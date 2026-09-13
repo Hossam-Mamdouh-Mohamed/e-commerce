@@ -1,15 +1,14 @@
 'use server'
 
-import { UserSignIn } from "@/app/login/page";
-import { cookies } from "next/headers";
-
-type SignInResult =
+import { UserSignUp } from "@/app/signup/page";
+type SignUpResult =
     | { success: true }
-    | { success: false; message: string };
+    | { success: false; message: string; errors?: unknown };
 
-export async function SignIn(data: UserSignIn): Promise<SignInResult> {
 
-    const response = await fetch("https://ecommerce.routemisr.com/api/v1/auth/signin",
+export async function SignUp(data: UserSignUp): Promise<SignUpResult> {
+
+    const response = await fetch("https://ecommerce.routemisr.com/api/v1/auth/signup",
         {
             method: "POST",
             headers: {
@@ -19,16 +18,15 @@ export async function SignIn(data: UserSignIn): Promise<SignInResult> {
         }
     );
     const payload = await response.json().catch(() => null);
-
+    console.log(payload);
     if (!response.ok) {
         return {
             success: false,
-            message: payload?.message ?? "Invalid email or password",
+            message: payload?.message ?? "Unable to create your account",
+            errors: payload?.errors,
         };
     }
-
-    const cookie = await cookies();
-    cookie.set('userToken', payload.token);
-
-    return { success: true };
+    return {
+        success: true,
+    }
 }

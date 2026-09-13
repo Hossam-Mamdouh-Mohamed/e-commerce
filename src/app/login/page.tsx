@@ -8,8 +8,9 @@ import { FaShieldHalved } from 'react-icons/fa6'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { Field } from '@base-ui/react/field'
-import { SignIn } from '@/services/auth.actions'
 import { toast } from "@/components/ui/toast"
+import { signIn } from 'next-auth/react'
+import { useRouter } from 'next/navigation'
 
 
 export type UserSignIn = z.infer<typeof formSchema>;
@@ -21,6 +22,7 @@ const formSchema = z.object({
 });
 
 export default function Login() {
+    const router = useRouter();
 
 
     const { control, handleSubmit, register } = useForm<z.infer<typeof formSchema>>({
@@ -33,27 +35,20 @@ export default function Login() {
     })
 
     async function onSubmit(data: UserSignIn) {
-        try {
-            const result = await SignIn(data);
-
-            if (result.success) {
-                toast.add({
-                    type: "success",
-                    description: "Signed In Successfully",
-                });
-                return;
-            }
-
+        const result = await signIn('credentials', { ...data, redirect: false });
+        if (result?.ok) {
             toast.add({
-                type: "error",
-                description: result.message,
+                type: "success",
+                description: "Signed In Successfully",
             });
-        } catch {
+            router.push('/')
+        } else {
             toast.add({
                 type: "error",
-                description: "Unable to sign in right now. Please try again.",
+                description: result?.error ?? "Invalid email or password",
             });
         }
+
     }
     return (
         <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-30">

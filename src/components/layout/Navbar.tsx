@@ -1,4 +1,7 @@
+"use client"
+
 import Link from "next/link"
+import { signOut, useSession } from "next-auth/react"
 import { Menu, Search, ShoppingCart, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
@@ -12,6 +15,8 @@ const navItems = [
 ]
 
 export default function Navbar() {
+  const { data: session, status } = useSession()
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -48,12 +53,38 @@ export default function Navbar() {
             <ShoppingCart className="size-4" />
           </Button>
 
-          <Button variant="outline" className="hidden sm:inline-flex">
-            <User className="mr-2 size-4" />
-            <a href="login">Sign in</a>
-          </Button>
+          {status === "loading" ? null : session ? (
+            <>
+              <span className="hidden text-sm text-muted-foreground sm:inline">
+                Hi, {session.user?.name ?? "User"}
+              </span>
+              <Button
+                variant="outline"
+                className="hidden sm:inline-flex"
+                onClick={() => signOut({ callbackUrl: "/" })}
+              >
+                Logout
+              </Button>
+            </>
+          ) : (
+            <>
+              <Button
+                variant="outline"
+                className="hidden sm:inline-flex"
+                render={<Link href="/login" />}
+              >
+                  <User className="mr-2 size-4" />
+                  Sign in
+              </Button>
 
-          <Button className="hidden sm:inline-flex">Create account</Button>
+              <Button
+                className="hidden sm:inline-flex"
+                render={<Link href="/signup" />}
+              >
+                Create account
+              </Button>
+            </>
+          )}
 
           <Button variant="ghost" size="icon" className="md:hidden" aria-label="Menu">
             <Menu className="size-4" />

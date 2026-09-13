@@ -5,6 +5,7 @@ import Footer from "@/components/layout/Footer";
 import { Exo } from "next/font/google";
 import StoreFeatures from "@/components/layout/StoreFeatures";
 import { Toaster } from "@/components/ui/toast"
+import AuthProvider from "@/components/auth/AuthProvider"
 
 const exo = Exo({
   variable: "--font-exo",
@@ -20,11 +21,13 @@ export default function RootLayout({ children }: LayoutProps<"/">) {
   return (
     <html lang="en" className={`${exo.variable} h-full antialiased`}>
       <body className="min-h-full flex flex-col">
-        <Navbar />
-        {children}
-        <Toaster />
-        <StoreFeatures />
-        <Footer />
+        <AuthProvider>
+          <Navbar />
+          {children}
+          <Toaster />
+          <StoreFeatures />
+          <Footer />
+        </AuthProvider>
       </body>
     </html>
   );

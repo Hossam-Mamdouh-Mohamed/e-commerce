@@ -4,11 +4,14 @@ import { FaBolt, FaBox, FaCheck, FaRegHeart, FaShare, FaStar, FaTruck } from 're
 import { Span } from 'next/dist/trace';
 import { FaArrowRotateLeft, FaCartShopping, FaShareNodes, FaShieldHalved, FaTruckFast } from 'react-icons/fa6';
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
+import ReviewsSection from '@/components/product/ReviewsSection';
+import { getProductReviews } from "@/services/reviewsApi";
 
 export default async function ProductDetails({ params }: { params: { id: string } }) {
 
     const { id } = await params;
     const product = await getProductDetails(id);
+    const reviews = await getProductReviews(id);
     const rating = Math.round(product.ratingsAverage || 0)
 
     return (
@@ -201,9 +204,12 @@ export default async function ProductDetails({ params }: { params: { id: string 
                         </TabsContent>
 
                         <TabsContent value="reviews">
-                            <div>
-
-                            </div>
+                            <ReviewsSection
+                                productId={id}
+                                rating={product.ratingsAverage || 0}
+                                reviewsCount={product.ratingsQuantity || 0}
+                                reviews={reviews}
+                            />
                         </TabsContent>
                         <TabsContent value="shipping" >
                             <div className='grid grid-cols-1 md:grid-cols-2 gap-4'>
