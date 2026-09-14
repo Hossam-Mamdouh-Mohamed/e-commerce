@@ -1,7 +1,8 @@
+import { AuthOptions } from "next-auth";
 import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from 'jwt-decode';
 
-export const authOptions = {
+export const authOptions: AuthOptions = {
   providers: [
     Credentials({
       name: 'My login',
@@ -39,7 +40,7 @@ export const authOptions = {
   callbacks: {
 
     // تستخدمها عشان تضيف بيانات للـ token.
-    async jwt({ token, user, profile, account, session, trigger }) {
+    async jwt({ token, user }) {
       if (user) {
         token.name = user.name;
         token.email = user.email;

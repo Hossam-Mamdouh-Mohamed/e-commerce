@@ -166,7 +166,7 @@ export default function Login() {
 
                                         <div className="text-right">
                                             <a
-                                                href="#"
+                                                href="/forget-password"
                                                 className="text-green-500 text-sm"
                                             >
                                                 Forgot Password
