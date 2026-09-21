@@ -54,8 +54,8 @@ export default function Login() {
         <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-30">
             <div className="flex flex-col md:flex-row min-h-screen">
                 <div className=" text-white md:w-1/2 relative overflow-hidden">
-                    <div className="mt-12 rounded-3xl bg-white p-4 shadow-xl">
-                        <Image src={image1} alt="Sign in" className='w-full rounded-2xl' width={800} height={400} />
+                    <div className="mt-12 overflow-hidden rounded-3xl border border-gray-200 bg-white p-1 shadow-[0_18px_45px_-24px_rgba(16,185,129,0.55)]">
+                        <Image src={image1} alt="Sign in" className='w-full rounded-[1.25rem] object-cover' width={800} height={400} />
                     </div>
                     <div>
                         <h1 className='text-3xl text-center font-extrabold py-3 text-black'>FreshCart - Your One-Stop Shop for Fresh Products</h1>

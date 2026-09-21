@@ -6,6 +6,8 @@ import { FaArrowRotateLeft, FaCartShopping, FaShareNodes, FaShieldHalved, FaTruc
 import { Tabs, TabsContent, TabsList, TabsTrigger } from '@/components/ui/tabs';
 import ReviewsSection from '@/components/product/ReviewsSection';
 import { getProductReviews } from "@/services/reviewsApi";
+import AddBtn from '@/components/addBtn/AddBtn';
+import AddToWishList from '@/components/addBtn/AddToWishList';
 
 export default async function ProductDetails({ params }: { params: { id: string } }) {
 
@@ -59,22 +61,15 @@ export default async function ProductDetails({ params }: { params: { id: string 
                         <span className='text-2xl text-green-600 font-extrabold'>{product.priceAfterDiscount?.toFixed(2) ?? product.price.toFixed(2)} EGP</span>
                     </div>
                     <div className="flex gap-2 py-5">
-                        <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white hover:bg-green-600">
-                            <FaCartShopping />
-                            Add to Cart
-                        </button>
-
+                        <AddBtn prodId={product._id} cls={"flex w-full items-center justify-center gap-2 rounded-lg bg-green-500 px-4 py-2.5 font-medium text-white hover:bg-green-600"} detail={<> <FaCartShopping />
+                            Add to Cart</>} />
                         <button className="flex w-full items-center justify-center gap-2 rounded-lg bg-black px-4 py-2.5 font-medium text-white hover:bg-gray-800">
                             <FaBolt />
                             Buy Now
                         </button>
                     </div>
                     <div className="flex gap-2 py-5">
-                        <button className="flex flex-1 group items-center justify-center gap-2 rounded-lg border hover:text-green-700 border-gray-400 px-4 py-2.5 font-medium text-gray-800 hover:border-green-300 shadow-sm">
-                            <FaRegHeart />
-                            Add to Wishlist
-                        </button>
-
+                        <AddToWishList cls={'flex flex-1 group items-center justify-center gap-2 rounded-lg border hover:text-green-700 border-gray-400 px-4 py-2.5 font-medium text-gray-800 hover:border-green-300 shadow-sm'} detail={<><FaRegHeart />Add to Wishlist</>} prodId={product._id} />
                         <button className="rounded-lg group border border-gray-400  px-4 py-2.5 font-medium text-white hover:border-green-500">
                             <FaShareNodes className='text-gray-700 group-hover:text-green-600' />
                         </button>

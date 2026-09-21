@@ -2,21 +2,29 @@
 
 import Link from "next/link"
 import { signOut, useSession } from "next-auth/react"
-import { Menu, Search, ShoppingCart, User } from "lucide-react"
+import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react"
 
 import { Button } from "@/components/ui/button"
+import { useQuery } from "@tanstack/react-query"
+import { getLoggedUserCart } from "@/services/cartApi"
 
 const navItems = [
   { label: "Home", href: "/" },
+  { label: "Shop", href: "/products" },
   { label: "Categories", href: "/categories" },
   { label: "Brands", href: "/brands" },
-  { label: "Offers", href: "#" },
   { label: "Support", href: "#" },
 ]
 
 export default function Navbar() {
-  const { data: session, status } = useSession()
+  const { data: session, status } = useSession();
 
+  const { data } = useQuery({
+    queryKey: ["cart"],
+    queryFn: getLoggedUserCart,
+    enabled: status === "authenticated",
+  });
+  
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
@@ -44,27 +52,54 @@ export default function Navbar() {
           ))}
         </nav>
 
-        <div className="flex items-center gap-2">
+        <div className="flex items-center gap-4">
           <Button variant="ghost" size="icon" aria-label="Search">
             <Search className="size-4" />
           </Button>
+             {status === "authenticated" && (
+            <Link href="/wishlist" aria-label="WishList">
+              <Heart className="size-6"/>
+            </Link>
+          )}
+          {status === "authenticated" && (
+            <Link href="/cart" className="relative" aria-label="Cart">
+              <ShoppingCart className="size-6" />
 
-          <Button variant="ghost" size="icon" aria-label="Cart">
-            <ShoppingCart className="size-4" />
-          </Button>
-
+              <span className="absolute -top-2 -right-2 min-w-4 h-4 px-1
+                     flex items-center justify-center
+                     rounded-full bg-green-600 text-white text-xs">
+                {data?.numOfCartItems ?? 0}
+              </span>
+            </Link>
+          )}
           {status === "loading" ? null : session ? (
             <>
-              <span className="hidden text-sm text-muted-foreground sm:inline">
-                Hi, {session.user?.name ?? "User"}
-              </span>
-              <Button
-                variant="outline"
-                className="hidden sm:inline-flex"
-                onClick={() => signOut({ callbackUrl: "/" })}
-              >
-                Logout
-              </Button>
+              <details className="group relative hidden sm:block">
+                <summary className="cursor-pointer list-none rounded-full px-3 py-2 text-sm text-muted-foreground transition-colors hover:bg-accent hover:text-foreground">
+                  Hi, {session.user?.name ?? "User"}
+                </summary>
+                <div className="absolute right-0 top-full z-50 mt-2 w-48 rounded-lg border border-border bg-background p-1 shadow-lg">
+                  <Link
+                    href="/profile"
+                    className="block rounded-md px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent"
+                  >
+                    Profile
+                  </Link>
+                  <Link
+                    href="/change-password"
+                    className="block rounded-md px-3 py-2 text-sm text-foreground transition-colors hover:bg-accent"
+                  >
+                    Change Password
+                  </Link>
+                  <button
+                    type="button"
+                    className="block w-full rounded-md px-3 py-2 text-left text-sm text-foreground transition-colors hover:bg-accent"
+                    onClick={() => signOut({ callbackUrl: "/" })}
+                  >
+                    Logout
+                  </button>
+                </div>
+              </details>
             </>
           ) : (
             <>
@@ -73,8 +108,8 @@ export default function Navbar() {
                 className="hidden sm:inline-flex"
                 render={<Link href="/login" />}
               >
-                  <User className="mr-2 size-4" />
-                  Sign in
+                <User className="mr-2 size-4" />
+                Sign in
               </Button>
 
               <Button

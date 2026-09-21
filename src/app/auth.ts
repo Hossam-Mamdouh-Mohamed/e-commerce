@@ -3,6 +3,9 @@ import Credentials from "next-auth/providers/credentials";
 import { jwtDecode } from 'jwt-decode';
 
 export const authOptions: AuthOptions = {
+  session: {
+    strategy: "jwt",
+  },
   providers: [
     Credentials({
       name: 'My login',
@@ -47,6 +50,7 @@ export const authOptions: AuthOptions = {
         token.id = user.id;
         token.accessToken = user.token;
       }
+      console.log('token ...........',token)
       return token
     },
     session({ session, token }) {

@@ -1,193 +1,454 @@
 'use client'
-import React from 'react'
-import * as z from "zod"
-import Image from 'next/image'
-import image1 from '@/assets/images/signin.png'
-import { FaClock, FaFacebookF, FaGoogle, FaLock, FaStar, FaTruck, FaUsers } from 'react-icons/fa'
+import React, { useState } from 'react'
+import * as z from 'zod'
+import { FaArrowAltCircleLeft, FaEnvelope, FaKey, FaLock } from 'react-icons/fa'
 import { FaShieldHalved } from 'react-icons/fa6'
 import { Controller, useForm } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Field } from '@base-ui/react/field'
-import { toast } from "@/components/ui/toast"
-import { signIn } from 'next-auth/react'
+import { toast } from '@/components/ui/toast'
 import { useRouter } from 'next/navigation'
-import { ForgetPassword, SignUp } from '@/services/auth.actions'
+import { ForgetPassword, ResetCode, ResetPassword as resetPasswordRequest } from '@/services/auth.actions'
 
+export type EmailSchema = z.infer<typeof emailSchema>
+export type ResetCodeSchema = z.infer<typeof resetCodeSchema>
+export type ResetPasswordSchema = z.infer<typeof resetPasswordSchema>
+export type ResetPasswordRequestData = {
+  email: string
+  newPassword: string
+}
 
-export type UserForgetPassword = z.infer<typeof formSchema>;
+const emailSchema = z.object({
+  email: z.string().trim().email('Invalid email address'),
+})
 
-const formSchema = z.object({
-  email: z.string().trim().email("Invalid email address"),
+const resetCodeSchema = z.object({
+  resetCode: z.string().trim().regex(/^[0-9]{6}$/, 'Enter a valid 6-digit code'),
+})
+
+const resetPasswordSchema = z.object({
+  newPassword: z.string().trim().min(6, 'Password must be at least 6 characters'),
 })
 
 export default function Register() {
-  const router = useRouter();
-  const [serverErrors, setServerErrors] = React.useState<string[]>([]);
+  const router = useRouter()
+  const [serverErrors, setServerErrors] = React.useState<string[]>([])
+  const [step, setStep] = useState(1)
+  const [resetEmail, setResetEmail] = useState('')
 
-  const { control, handleSubmit } = useForm<z.infer<typeof formSchema>>({
-    resolver: zodResolver(formSchema),
+  const { control, handleSubmit: handleEmailSubmit } = useForm<EmailSchema>({
+    resolver: zodResolver(emailSchema),
     defaultValues: {
-      email: "",
+      email: '',
     },
   })
 
-  async function onSubmit(data: UserForgetPassword) {
-    setServerErrors([]);
-    const result = await ForgetPassword(data);
+  const { control: resetControl, handleSubmit: handleResetCodeSubmit } = useForm<ResetCodeSchema>({
+    resolver: zodResolver(resetCodeSchema),
+    defaultValues: {
+      resetCode: '',
+    },
+  })
+
+  const { control: resetPasswordControl, handleSubmit: handleResetPasswordSubmit } = useForm<ResetPasswordSchema>({
+    resolver: zodResolver(resetPasswordSchema),
+    defaultValues: {
+      newPassword: '',
+    },
+  })
+
+  async function onEmailSubmit(data: EmailSchema) {
+    setServerErrors([])
+    setResetEmail(data.email)
+    const result = await ForgetPassword(data)
+
     if (result.success) {
       toast.add({
-        type: "success",
-        description: "Reset code sent to your email successfully",
-      });
-      router.push('/login')
-    } else {
-      const errors = Array.isArray(result.errors)
-        ? result.errors.map((error) => {
-          if (typeof error === "string") return error;
-          if (error && typeof error === "object" && "msg" in error) {
-            return String(error.msg);
-          }
-          return result.message;
-        })
-        : result.errors && typeof result.errors === "object"
-          ? Object.values(result.errors as Record<string, unknown>).map(String)
-          : [result.message];
-
-      setServerErrors(errors.length ? errors : [result.message]);
-      toast.add({
-        type: "error",
-        description: result.message,
-      });
+        type: 'success',
+        description: 'Reset code sent to your email successfully',
+      })
+      setStep(2)
+      return
     }
 
+    const errors = Array.isArray(result.errors)
+      ? result.errors.map((error) => {
+          if (typeof error === 'string') return error
+          if (error && typeof error === 'object' && 'msg' in error) {
+            return String(error.msg)
+          }
+          return result.message
+        })
+      : result.errors && typeof result.errors === 'object'
+        ? Object.values(result.errors as Record<string, unknown>).map(String)
+        : [result.message]
+
+    setServerErrors(errors.length ? errors : [result.message])
+    toast.add({
+      type: 'error',
+      description: result.message,
+    })
   }
+
+  async function onResetCodeSubmit(data: ResetCodeSchema) {
+    setServerErrors([])
+    const result = await ResetCode(data)
+
+    if (result.success) {
+      toast.add({
+        type: 'success',
+        description: 'Reset code verified successfully',
+      })
+      setStep(3)
+      return
+    }
+
+    const errors = Array.isArray(result.errors)
+      ? result.errors.map((error) => {
+          if (typeof error === 'string') return error
+          if (error && typeof error === 'object' && 'msg' in error) {
+            return String(error.msg)
+          }
+          return result.message
+        })
+      : result.errors && typeof result.errors === 'object'
+        ? Object.values(result.errors as Record<string, unknown>).map(String)
+        : [result.message]
+
+    setServerErrors(errors.length ? errors : [result.message])
+    toast.add({
+      type: 'error',
+      description: result.message,
+    })
+  }
+
+  async function onResetPasswordSubmit(data: ResetPasswordSchema) {
+    setServerErrors([])
+    const payload: ResetPasswordRequestData = {
+      email: resetEmail,
+      newPassword: data.newPassword,
+    }
+
+    const result = await resetPasswordRequest(payload)
+
+    if (result.success) {
+      toast.add({
+        type: 'success',
+        description: 'Password reset successfully',
+      })
+      router.push('/login')
+      return
+    }
+
+    const errors = Array.isArray(result.errors)
+      ? result.errors.map((error) => {
+          if (typeof error === 'string') return error
+          if (error && typeof error === 'object' && 'msg' in error) {
+            return String(error.msg)
+          }
+          return result.message
+        })
+      : result.errors && typeof result.errors === 'object'
+        ? Object.values(result.errors as Record<string, unknown>).map(String)
+        : [result.message]
+
+    setServerErrors(errors.length ? errors : [result.message])
+    toast.add({
+      type: 'error',
+      description: result.message,
+    })
+  }
+
   return (
     <div className="max-w-7xl px-4 sm:px-6 lg:px-8 mx-30">
-      <div className="flex justify-center min-h-screen">
-        <div className="p-8 md:p-12 md:w-1/2 flex items-center justify-center">
+      <div className="flex flex-col md:flex-row min-h-screen">
+        <div className="text-white md:w-1/2 relative overflow-hidden">
+          <div className="mt-12 h-96 bg-green-100 rounded-3xl p-4 shadow-sm relative">
+            <div className="flex justify-center gap-2 items-center w-full h-full">
+              <div className="p-5 rounded-2xl rotate-350 bg-white text-green-600">
+                <FaEnvelope className="text-2xl" />
+              </div>
+              <div className="p-4 rounded-2xl rotate-3 hover:rotate-0 transition-transform duration-300 bg-white text-green-600">
+                <div className="p-3 bg-green-100 rounded-2xl">
+                  <FaLock className="text-4xl" />
+                </div>
+              </div>
+              <div className="p-5 rounded-2xl rotate-10 bg-white text-green-600">
+                <FaShieldHalved />
+              </div>
+            </div>
+            <div className="rounded-full h-22 bg-green-200 w-22 absolute left-10 top-10" />
+            <div className="rounded-full h-15 bg-green-200 w-15 absolute right-15 top-22" />
+            <div className="rounded-full h-30 bg-green-200 w-30 absolute right-10 bottom-10" />
+          </div>
+          <div>
+            <h1 className="text-3xl text-center font-extrabold py-3 text-black">Reset Your Password</h1>
+            <p className="text-center font-extrabold py-3 text-lg text-gray-600">
+              Don&apos;t worry, it happens to the best of us. We&apos;ll help you get back into your account in no time.
+            </p>
+          </div>
+          <div className="flex items-center justify-center space-x-8 text-sm text-gray-500 py-3">
+            <div className="flex items-center gap-1">
+              <FaEnvelope className="text-green-600" />
+              Email Verification
+            </div>
+            <div className="flex items-center gap-1">
+              <FaShieldHalved className="text-green-600" />
+              Secure Reset
+            </div>
+            <div className="flex items-center gap-1">
+              <FaLock className="text-green-600" />
+              Encrypted
+            </div>
+          </div>
+        </div>
+
+        <div className="p-8 md:p-12 md:w-1/2 flex justify-center">
           <div className="w-full max-w-md bg-white rounded-3xl shadow-lg p-8">
             <div className="mb-8">
-              <h1 className='text-3xl font-extrabold text-center py-2'><span className='text-green-600'>Fresh</span>Cart</h1>
-              <h1 className='text-3xl font-extrabold text-center '>Forgot Password?</h1>
-              <p className="text-gray-600 mb-1">
-                No worries, we'll send you a reset code
-              </p>
+              <h1 className="text-3xl font-extrabold text-center py-2">
+                <span className="text-green-600">Fresh</span>Cart
+              </h1>
+              <h1 className="text-3xl font-extrabold text-center">Forgot Password?</h1>
+              <p className="text-gray-600 mb-1 text-center">No worries, we&apos;ll send you a reset code</p>
             </div>
-            <div className="flex items-center justify-center mb-8">
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-primary-600 text-white ring-4 ring-primary-100">
-                  <svg data-prefix="fas" data-icon="envelope" className="svg-inline--fa fa-envelope text-xs" role="img" viewBox="0 0 512 512" aria-hidden="true">
-                    <path fill="currentColor" d="M48 64c-26.5 0-48 21.5-48 48 0 15.1 7.1 29.3 19.2 38.4l208 156c17.1 12.8 40.5 12.8 57.6 0l208-156c12.1-9.1 19.2-23.3 19.2-38.4 0-26.5-21.5-48-48-48L48 64zM0 196L0 384c0 35.3 28.7 64 64 64l384 0c35.3 0 64-28.7 64-64l0-188-198.4 148.8c-34.1 25.6-81.1 25.6-115.2 0L0 196z" /></svg>
-                </div>
-                <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-gray-200" />
-              </div><div className="flex items-center">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-400">
-                  <svg data-prefix="fas" data-icon="key" className="svg-inline--fa fa-key text-xs" role="img" viewBox="0 0 512 512" aria-hidden="true">
-                    <path fill="currentColor" d="M336 352c97.2 0 176-78.8 176-176S433.2 0 336 0 160 78.8 160 176c0 18.7 2.9 36.8 8.3 53.7L7 391c-4.5 4.5-7 10.6-7 17l0 80c0 13.3 10.7 24 24 24l80 0c13.3 0 24-10.7 24-24l0-40 40 0c13.3 0 24-10.7 24-24l0-40 40 0c6.4 0 12.5-2.5 17-7l33.3-33.3c16.9 5.4 35 8.3 53.7 8.3zM376 96a40 40 0 1 1 0 80 40 40 0 1 1 0-80z" /></svg>
-                </div>
-                <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-gray-200" />
-              </div>
-              <div className="flex items-center">
-                <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-400">
-                  <svg data-prefix="fas" data-icon="lock" className="svg-inline--fa fa-lock text-xs" role="img" viewBox="0 0 384 512" aria-hidden="true">
-                    <path fill="currentColor" d="M128 96l0 64 128 0 0-64c0-35.3-28.7-64-64-64s-64 28.7-64 64zM64 160l0-64C64 25.3 121.3-32 192-32S320 25.3 320 96l0 64c35.3 0 64 28.7 64 64l0 224c0 35.3-28.7 64-64 64L64 512c-35.3 0-64-28.7-64-64L0 224c0-35.3 28.7-64 64-64z" />
-                  </svg>
-                </div>
-              </div>
-            </div>
-            <form onSubmit={handleSubmit(onSubmit)} className="space-y-6">
 
-              {serverErrors.length > 0 && (
-                <div
-                  role="alert"
-                  className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600"
-                >
-                  {serverErrors.map((error, index) => (
-                    <p key={`${error}-${index}`}>{error}</p>
-                  ))}
-                </div>
-              )}
-
-              <Controller
-                name="email"
-                control={control}
-                render={({ field, fieldState }) => (
-                  <div className="space-y-2">
-
-                    <label
-                      htmlFor={field.name}
-                      className="block text-sm font-semibold text-gray-700 mb-2"
-                    >
-                      Email Address
-                    </label>
-
-                    <input
-                      {...field}
-                      id={field.name}
-                      type="email"
-                      placeholder="Enter your email"
-                      autoComplete="off"
-                      className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
-                    />
-
-                    {fieldState.invalid && (
-                      <p className="text-sm text-red-500">
-                        {fieldState.error?.message}
-                      </p>
-                    )}
-
+            {step === 1 && (
+              <>
+                <div className="flex items-center justify-center mb-8">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-green-600 text-white ring-4 ring-primary-100">
+                      <FaEnvelope />
+                    </div>
+                    <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-gray-200" />
                   </div>
-                )}
-              />
-
-              {/* Submit */}
-              <button
-                type="submit"
-                className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition duration-200"
-              >
-                Send Reset Code
-              </button>
-
-              <hr />
-
-              {/* Create Account */}
-              <p className="text-center font-bold">
-                New to FreshCart?
-
-                <a
-                  href="/signup"
-                  className="text-green-500 hover:text-green-600 font-medium ml-1"
-                >
-                  Create an account
-                </a>
-              </p>
-
-              {/* Features */}
-              <div className="flex justify-center gap-5">
-
-                <div className="flex gap-1 items-center">
-                  <FaLock className="text-gray-400" />
-                  <p>SSL Secured</p>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-400">
+                      <FaKey />
+                    </div>
+                    <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-gray-200" />
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-400">
+                      <FaLock />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex gap-1 items-center">
-                  <FaUsers className="text-gray-400" />
-                  <p>50K+ Users</p>
+                <form onSubmit={handleEmailSubmit(onEmailSubmit)} className="space-y-6">
+                  {serverErrors.length > 0 && (
+                    <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                      {serverErrors.map((error, index) => (
+                        <p key={`${error}-${index}`}>{error}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  <Controller
+                    name="email"
+                    control={control}
+                    render={({ field, fieldState }) => (
+                      <div className="space-y-2">
+                        <label htmlFor={field.name} className="block text-sm font-semibold text-gray-700 mb-2">
+                          Email Address
+                        </label>
+
+                        <input
+                          {...field}
+                          id={field.name}
+                          type="email"
+                          placeholder="Enter your email"
+                          autoComplete="off"
+                          className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+
+                        {fieldState.invalid && <p className="text-sm text-red-500">{fieldState.error?.message}</p>}
+                      </div>
+                    )}
+                  />
+
+                  <button
+                    type="submit"
+                    className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition duration-200"
+                  >
+                    Send Reset Code
+                  </button>
+
+                  <hr />
+
+                  <a href="/signup" className="text-green-500 hover:text-green-600 font-medium ml-1 flex items-center justify-center gap-1">
+                    <FaArrowAltCircleLeft /> Back to Sign In
+                  </a>
+
+                  <p className="text-center font-bold">
+                    Remember your password?
+                    <a href="/login" className="text-green-500 hover:text-green-600 font-medium ml-1">
+                      Sign In
+                    </a>
+                  </p>
+                </form>
+              </>
+            )}
+
+            {step === 2 && (
+              <>
+                <div className="flex items-center justify-center mb-8">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-green-600 text-white ring-4 ring-primary-100">
+                      <FaEnvelope />
+                    </div>
+                    <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-gray-200" />
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-green-600 text-white">
+                      <FaKey />
+                    </div>
+                    <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-gray-200" />
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-gray-100 text-gray-400">
+                      <FaLock />
+                    </div>
+                  </div>
                 </div>
 
-                <div className="flex gap-1 items-center">
-                  <FaStar className="text-gray-400" />
-                  <p>4.9 Rating</p>
+                <form onSubmit={handleResetCodeSubmit(onResetCodeSubmit)} className="space-y-6">
+                  {serverErrors.length > 0 && (
+                    <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                      {serverErrors.map((error, index) => (
+                        <p key={`${error}-${index}`}>{error}</p>
+                      ))}
+                    </div>
+                  )}
+
+                  <Controller
+                    name="resetCode"
+                    control={resetControl}
+                    render={({ field, fieldState }) => (
+                      <div className="space-y-2">
+                        <label htmlFor={field.name} className="block text-sm font-semibold text-gray-700 mb-2">
+                          Reset Code
+                        </label>
+
+                        <input
+                          {...field}
+                          id={field.name}
+                          type="text"
+                          inputMode="numeric"
+                          maxLength={6}
+                          placeholder="Enter 6-digit code"
+                          autoComplete="one-time-code"
+                          className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+
+                        {fieldState.invalid && <p className="text-sm text-red-500">{fieldState.error?.message}</p>}
+                      </div>
+                    )}
+                  />
+
+                  <button
+                    type="submit"
+                    className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition duration-200"
+                  >
+                    Verify Code
+                  </button>
+
+                  <hr />
+
+                  <a href="/signup" className="text-green-500 hover:text-green-600 font-medium ml-1 flex items-center justify-center gap-1">
+                    <FaArrowAltCircleLeft /> Back to Sign In
+                  </a>
+
+                  <p className="text-center font-bold">
+                    Remember your password?
+                    <a href="/login" className="text-green-500 hover:text-green-600 font-medium ml-1">
+                      Sign In
+                    </a>
+                  </p>
+                </form>
+              </>
+            )}
+
+            {step === 3 && (
+              <>
+                <div className="flex items-center justify-center mb-8">
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-green-600 text-white ring-4 ring-primary-100">
+                      <FaEnvelope />
+                    </div>
+                    <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-green-600" />
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-green-600 text-white">
+                      <FaKey />
+                    </div>
+                    <div className="w-16 h-0.5 mx-2 transition-all duration-300 bg-green-600" />
+                  </div>
+                  <div className="flex items-center">
+                    <div className="w-10 h-10 rounded-full flex items-center justify-center text-sm font-semibold transition-all duration-300 bg-green-600 text-white">
+                      <FaLock />
+                    </div>
+                  </div>
                 </div>
 
-              </div>
+                <form onSubmit={handleResetPasswordSubmit(onResetPasswordSubmit)} className="space-y-6">
+                  {serverErrors.length > 0 && (
+                    <div role="alert" className="rounded-md border border-red-200 bg-red-50 px-4 py-3 text-sm text-red-600">
+                      {serverErrors.map((error, index) => (
+                        <p key={`${error}-${index}`}>{error}</p>
+                      ))}
+                    </div>
+                  )}
 
-            </form>
+                  <Controller
+                    name="newPassword"
+                    control={resetPasswordControl}
+                    render={({ field, fieldState }) => (
+                      <div className="space-y-2">
+                        <label htmlFor={field.name} className="block text-sm font-semibold text-gray-700 mb-2">
+                          New Password
+                        </label>
+
+                        <input
+                          {...field}
+                          id={field.name}
+                          type="password"
+                          placeholder="Enter your new password"
+                          autoComplete="new-password"
+                          className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
+                        />
+
+                        {fieldState.invalid && <p className="text-sm text-red-500">{fieldState.error?.message}</p>}
+                      </div>
+                    )}
+                  />
+
+                  <button
+                    type="submit"
+                    className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition duration-200"
+                  >
+                    Reset Password
+                  </button>
+
+                  <hr />
+
+                  <a href="/signup" className="text-green-500 hover:text-green-600 font-medium ml-1 flex items-center justify-center gap-1">
+                    <FaArrowAltCircleLeft /> Back to Sign In
+                  </a>
+
+                  <p className="text-center font-bold">
+                    Remember your password?
+                    <a href="/login" className="text-green-500 hover:text-green-600 font-medium ml-1">
+                      Sign In
+                    </a>
+                  </p>
+                </form>
+              </>
+            )}
           </div>
         </div>
       </div>
     </div>
-
   )
 }
+
 
