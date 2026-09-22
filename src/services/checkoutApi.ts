@@ -23,13 +23,7 @@ type CheckoutResult =
   | { success: true; url: string; message?: string }
   | { success: false; message: string };
 
-export async function Checkout({
-  data,
-  CartId,
-}: {
-  data: ShippingAddress;
-  CartId: string;
-}): Promise<CheckoutResult> {
+export async function Checkout({data,CartId,}: {data: ShippingAddress;CartId: string;}): Promise<CheckoutResult> {
   const accessToken = await getToken();
 
   if (!accessToken) {

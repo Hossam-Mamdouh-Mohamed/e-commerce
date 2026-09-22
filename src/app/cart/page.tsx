@@ -4,7 +4,8 @@ import CartContent from '@/components/cart/CartContent'
 
 export default async function Cart() {
   try {
-    const cart = await getLoggedUserCart()
+    const cart = await getLoggedUserCart();
+
     return <CartContent initialCart={cart} />
   } catch {
     return (

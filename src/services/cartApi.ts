@@ -33,7 +33,7 @@ export async function addToCart(id: string):Promise<Root>  {
 export async function getLoggedUserCart(): Promise<Root> {
 
     const acessToken = await getToken();
-
+    console.log("acessToken", acessToken);
     if (!acessToken) {
         throw new Error("Authentication token is missing");
     }

@@ -5,20 +5,15 @@ import Link from "next/link";
 import { useMutation, useQuery, useQueryClient } from "@tanstack/react-query";
 import { Minus, Plus, ShoppingBag, Trash2 } from "lucide-react";
 
-import {
-  clearCart,
-  getLoggedUserCart,
-  removeCartProduct,
-  updateCartProductQty,
-} from "@/services/cartApi";
+import {clearCart,getLoggedUserCart,removeCartProduct,updateCartProductQty,} from "@/services/cartApi";
 
 import { Root } from "@/types/cart";
 import { toast } from "@/components/ui/toast";
 import { FaTrash } from "react-icons/fa";
 
 export default function CartContent({ initialCart, }: { initialCart: Root; }) {
-  const queryClient = useQueryClient();
 
+  const queryClient = useQueryClient();
   const { data: cart, isLoading, isError, } = useQuery({
     queryKey: ["cart"],
     queryFn: getLoggedUserCart,
