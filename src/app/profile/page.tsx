@@ -4,7 +4,9 @@ import { useSession } from 'next-auth/react'
 import Link from 'next/link'
 
 export default function ProfilePage() {
-  const { data: session } = useSession()
+
+  const { data: session } = useSession();
+  
 
   return (
     <main className="mx-auto flex min-h-screen w-full max-w-2xl justify-center px-4 py-16 sm:px-6">

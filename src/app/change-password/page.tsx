@@ -103,7 +103,7 @@ export default function Register() {
                   ))}
                 </div>
               )}
-     {/* Password */}
+
               <Controller
                 name="currentPassword"
                 control={control}
@@ -114,14 +114,14 @@ export default function Register() {
                       htmlFor={field.name}
                       className="block text-sm font-semibold text-gray-700 mb-2"
                     >
-                      Enter your Password
+                      Enter your Current Password
                     </label>
 
                     <input
                       {...field}
                       id={field.name}
                       type="password"
-                      placeholder="currentPassword"
+                      placeholder="Current Password"
                       autoComplete="current-password"
                       className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
@@ -136,7 +136,6 @@ export default function Register() {
                 )}
               />
 
-              {/* Password */}
               <Controller
                 name="password"
                 control={control}
@@ -147,15 +146,15 @@ export default function Register() {
                       htmlFor={field.name}
                       className="block text-sm font-semibold text-gray-700 mb-2"
                     >
-                      Enter your Password
+                      Enter New Password
                     </label>
 
                     <input
                       {...field}
                       id={field.name}
                       type="password"
-                      placeholder="Password"
-                      autoComplete="current-password"
+                      placeholder="New Password"
+                      autoComplete="New-password"
                       className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
                     />
 
@@ -185,7 +184,7 @@ export default function Register() {
                     <input
                       {...field}
                       id={field.name}
-                      type="rePassword"
+                      type="Password"
                       placeholder="rePassword"
                       autoComplete="current-password"
                       className="w-full h-12 px-3 py-2 border border-gray-300 rounded-md focus:outline-none focus:ring-2 focus:ring-green-500 focus:border-transparent"
@@ -201,7 +200,6 @@ export default function Register() {
                 )}
               />
 
-              {/* Submit */}
               <button
                 type="submit"
                 className="w-full h-12 bg-green-500 hover:bg-green-600 text-white font-medium rounded-md transition duration-200"

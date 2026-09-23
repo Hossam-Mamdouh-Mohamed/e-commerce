@@ -6,6 +6,7 @@ import { toast } from '../ui/toast';
 import { useMutation, useQueryClient } from '@tanstack/react-query';
 
 export default function AddBtn({ cls, detail, prodId }: { cls: string, detail: ReactNode, prodId: string }) {
+
     const queryClient = useQueryClient();
 
         function handleAddToCart() {
@@ -17,7 +18,7 @@ export default function AddBtn({ cls, detail, prodId }: { cls: string, detail: R
         onError:()=>{
               toast.add({
                 type: "Error",
-                description: "Faild To Add To Cart",
+                description: "Faild To Add To Cart , Make Sure That you are Signed In",
             });
         },
            onSuccess:(updatedCart)=>{

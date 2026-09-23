@@ -111,41 +111,17 @@ export default async function ProductDetails({ params }: { params: { id: string 
             <div className='rounded-2xl border border-gray-200 shadow-sm my-10'>
                 <Tabs defaultValue="description">
                     <TabsList className="h-auto gap-2 bg-gray-100 p-2">
-                        <TabsTrigger
-                            value="description"
-                            className="
-                gap-2 rounded-lg px-4 py-2
-                data-[state=active]:bg-green-600
-                data-[state=active]:text-white
-                data-[state=active]:shadow-sm
-            "
-                        >
+                        <TabsTrigger value="description" className="gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-sm">
                             <FaBox className="text-sm" />
                             Product Details
                         </TabsTrigger>
 
-                        <TabsTrigger
-                            value="reviews"
-                            className="
-                gap-2 rounded-lg px-4 py-2
-                data-[state=active]:bg-green-600
-                data-[state=active]:text-white
-                data-[state=active]:shadow-sm
-            "
-                        >
+                        <TabsTrigger value="reviews" className="gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-sm">
                             <FaStar className="text-sm" />
                             Reviews
                         </TabsTrigger>
 
-                        <TabsTrigger
-                            value="shipping"
-                            className="
-                gap-2 rounded-lg px-4 py-2
-                data-[state=active]:bg-green-600
-                data-[state=active]:text-white
-                data-[state=active]:shadow-sm
-            "
-                        >
+                        <TabsTrigger value="shipping" className="gap-2 rounded-lg px-4 py-2 data-[state=active]:bg-green-600 data-[state=active]:text-white data-[state=active]:shadow-sm">
                             <FaTruck className="text-sm" />
                             Shipping & Returns
                         </TabsTrigger>

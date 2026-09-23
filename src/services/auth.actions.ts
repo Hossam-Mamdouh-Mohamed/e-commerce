@@ -4,6 +4,7 @@ import { UserChangePassword } from "@/app/change-password/page";
 import { EmailSchema, ResetCodeSchema, ResetPasswordRequestData } from "@/app/forget-password/page";
 import { UserSignUp } from "@/app/signup/page";
 import { getToken } from "next-auth/jwt";
+import { signOut } from "next-auth/react";
 import { cookies } from "next/headers";
 import { NextRequest } from "next/server";
 
@@ -148,7 +149,7 @@ export async function ChangePassword(data: UserChangePassword): Promise<SignUpRe
     const response = await fetch("https://ecommerce.routemisr.com/api/v1/users/changeMyPassword",
         {
             method: "PUT",
-headers: {
+            headers: {
                 "Content-Type": "application/json",
                 token: token.accessToken,
             },
@@ -156,6 +157,9 @@ headers: {
         }
     );
     const payload = await response.json().catch(() => null);
+
+    // Sign out the user after changing the password
+    await signOut({ redirect: false , callbackUrl: '/login'});
 
     if (!response.ok) {
         return {
