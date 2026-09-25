@@ -1,6 +1,7 @@
 "use client"
 
 import Link from "next/link"
+import { usePathname } from "next/navigation"
 import { signOut, useSession } from "next-auth/react"
 import { Heart, Menu, Search, ShoppingCart, User } from "lucide-react"
 
@@ -17,6 +18,7 @@ const navItems = [
 ]
 
 export default function Navbar() {
+  const pathname = usePathname()
   const { data: session, status } = useSession();
 
   const { data } = useQuery({
@@ -24,16 +26,21 @@ export default function Navbar() {
     queryFn: getLoggedUserCart,
     enabled: status === "authenticated",
   });
-  
+
+  const isItemActive = (href: string) => {
+    if (href === "/") return pathname === "/"
+    return pathname === href || pathname.startsWith(`${href}/`)
+  }
+
   return (
     <header className="sticky top-0 z-50 border-b border-border/80 bg-background/95 backdrop-blur-md">
       <div className="mx-auto flex max-w-7xl items-center justify-between gap-4 px-4 py-3 sm:px-6 lg:px-8">
         <Link href="/" className="flex items-center gap-3">
           <div className="flex size-10 items-center justify-center rounded-xl bg-primary text-lg font-black text-primary-foreground shadow-sm">
-            O
+            F
           </div>
           <div className="leading-none">
-            <div className="text-lg font-black tracking-tight">Ostoli</div>
+            <div className="text-lg font-black tracking-tight">FrechCart</div>
             <div className="text-[10px] font-medium uppercase tracking-[0.22em] text-muted-foreground">
               Market
             </div>
@@ -41,15 +48,23 @@ export default function Navbar() {
         </Link>
 
         <nav className="hidden items-center gap-1 md:flex">
-          {navItems.map((item) => (
-            <Link
-              key={item.label}
-              href={item.href}
-              className="rounded-full px-3 py-2 text-sm font-medium text-foreground/80 transition-colors hover:bg-accent hover:text-foreground"
-            >
-              {item.label}
-            </Link>
-          ))}
+          {navItems.map((item) => {
+            const active = isItemActive(item.href)
+
+            return (
+              <Link
+                key={item.label}
+                href={item.href}
+                className={`rounded-full px-3 py-2 text-sm font-medium transition-colors ${
+                  active
+                    ? "bg-primary text-primary-foreground shadow-sm"
+                    : "text-foreground/80 hover:bg-accent hover:text-foreground"
+                }`}
+              >
+                {item.label}
+              </Link>
+            )
+          })}
         </nav>
 
         <div className="flex items-center gap-4">

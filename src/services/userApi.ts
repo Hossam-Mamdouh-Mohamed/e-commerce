@@ -10,6 +10,5 @@ export async function getUserOrders(){
         throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    console.log(res, "res");
     return data;
 }

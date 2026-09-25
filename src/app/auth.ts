@@ -13,7 +13,7 @@ export const authOptions: AuthOptions = {
         email: { label: 'Email', placeholder: 'Enter Your Email', type: 'email' },
         password: { label: 'Password', type: 'password', placeholder: 'Enter Your Password' }
       },
-      //must return 1- null or 2- object with property id from type string or 3- throw error 
+
       async authorize(credentials) {
 
         const response = await fetch("https://ecommerce.routemisr.com/api/v1/auth/signin",
@@ -34,23 +34,22 @@ export const authOptions: AuthOptions = {
         return {
           id: userData.id,
           name: payload.user.name,
-          email:payload.user.email,
-          token: payload.token
+          email: payload.user.email,
+          token: payload.token,
+          image : payload.image
         }
       }
     })
   ],
   callbacks: {
-
-    // تستخدمها عشان تضيف بيانات للـ token.
     async jwt({ token, user }) {
       if (user) {
         token.name = user.name;
         token.email = user.email;
         token.id = user.id;
         token.accessToken = user.token;
+        token.picture = user.image;
       }
-      console.log('token ...........',token)
       return token
     },
     session({ session, token }) {
@@ -58,6 +57,7 @@ export const authOptions: AuthOptions = {
         session.user.id = token.id as string;
         session.user.name = token.name;
         session.user.email = token.email;
+        session.user.image = token.picture;
       }
       return session
     }

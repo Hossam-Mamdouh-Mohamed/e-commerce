@@ -1,8 +1,9 @@
 'use server'
 
+import { Root } from "@/types/orders";
 import { getUserId } from "./getToken";
 
-export async function getUserOrders(){
+export async function getUserOrders():Promise<Root[]>{
 
     const id = await getUserId();
     const res = await fetch(`https://ecommerce.routemisr.com/api/v1/orders/user/${id}`,);
@@ -10,6 +11,5 @@ export async function getUserOrders(){
         throw new Error(`HTTP error! status: ${res.status}`);
     }
     const data = await res.json();
-    console.log(res, "res");
     return data;
 }

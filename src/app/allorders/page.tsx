@@ -1,262 +1,131 @@
 'use client'
+
+import {
+  Table,
+  TableBody,
+  TableCell,
+  TableFooter,
+  TableHead,
+  TableHeader,
+  TableRow,
+} from '@/components/ui/table';
 import { getUserOrders } from '@/services/userOrders';
-import { useQuery } from '@tanstack/react-query'
-import React from 'react'
+import { useQuery } from '@tanstack/react-query';
+
+const currencyFormatter = new Intl.NumberFormat('en-US', {
+  style: 'currency',
+  currency: 'USD',
+});
 
 export default function AllOrders() {
-
-  const {data:orders,error,isLoading} = useQuery({
+  const { data: orders = [], error, isLoading } = useQuery({
     queryFn: getUserOrders,
-    queryKey:['orders'],
+    queryKey: ['orders'],
   });
 
-  //   if (!products.length) {
-  //   return (
-  //     <main className="flex min-h-[60vh] items-center justify-center px-4 py-16">
-  //       <div className="max-w-md text-center">
-  //         <div className="mx-auto flex size-16 items-center justify-center rounded-full bg-emerald-50 text-emerald-600">
-  //           <ShoppingBag className="size-7" />
-  //         </div>
+  const totalAmount = orders.reduce((sum, order) => sum + (order.totalOrderPrice || 0), 0);
 
-  //         <h1 className="mt-6 text-3xl font-bold tracking-tight text-slate-950">
-  //           Your cart is empty
-  //         </h1>
+  if (isLoading) {
+    return (
+      <main className="flex min-h-[60vh] items-center justify-center px-4 py-16">
+        <div className="rounded-2xl border border-slate-200 bg-white px-8 py-6 text-center shadow-sm">
+          <p className="text-xs font-semibold uppercase tracking-[0.2em] text-slate-500">Orders</p>
+          <h1 className="mt-3 text-2xl font-bold text-slate-800">Loading your orders...</h1>
+        </div>
+      </main>
+    );
+  }
 
-  //         <p className="mt-3 text-slate-600">
-  //           Find something useful for your next order and it
-  //           will appear here.
-  //         </p>
+  if (error || !orders?.length) {
+    return (
+      <main className="flex min-h-[60vh] items-center justify-center px-4 py-16">
+        <div className="w-full max-w-xl rounded-3xl border border-slate-200 bg-white p-8 text-center shadow-sm">
+          <div className="mx-auto mb-4 flex h-14 w-14 items-center justify-center rounded-full bg-slate-100 text-2xl text-slate-600">
+            📦
+          </div>
+          <h1 className="text-2xl font-bold text-slate-800">No orders yet</h1>
+          <p className="mt-3 text-sm text-slate-500">
+            Your order history will appear here once you place your first purchase.
+          </p>
+        </div>
+      </main>
+    );
+  }
 
-  //         <Link
-  //           href="/products"
-  //           className="mt-8 inline-flex rounded-lg bg-slate-950 px-5 py-3 text-sm font-semibold text-white transition hover:bg-emerald-600"
-  //         >
-  //           Continue shopping
-  //         </Link>
-  //       </div>
-  //     </main>
-  //   );
-  // }
+  return (
+    <main className="min-h-[60vh] bg-slate-50 px-4 py-10 md:px-8">
+      <div className="mx-auto max-w-6xl">
+        <div className="mb-6 flex flex-col gap-3 sm:flex-row sm:items-end sm:justify-between">
+          <div>
+            <p className="text-xs font-semibold uppercase tracking-[0.22em] text-slate-500">Orders</p>
+            <h1 className="mt-2 text-3xl font-black tracking-tight text-slate-900">All Orders</h1>
+          </div>
 
-  //   return (
-  //    <main className="min-h-[70vh] bg-slate-50 px-4 py-10 sm:px-6 lg:px-8">
-  //        <div className="mx-auto max-w-7xl">
+          <div className="rounded-2xl border border-slate-200 bg-white px-4 py-3 shadow-sm">
+            <span className="text-sm text-slate-500">Total orders</span>
+            <span className="ml-2 text-lg font-bold text-slate-900">{orders.length}</span>
+          </div>
+        </div>
 
-  //          <div className="mb-8 flex flex-wrap items-end justify-between gap-4">
-  //            <div>
-  //              <p className="mb-2 text-sm font-semibold uppercase tracking-[0.2em] text-emerald-600">
-  //                Shopping cart
-  //              </p>
+        <div className="overflow-hidden rounded-3xl border border-slate-200 bg-white shadow-sm">
+          <Table className="min-w-full text-left">
+            <TableHeader>
+              <TableRow className="bg-slate-50">
+                <TableHead className="w-[150px] px-5 py-4 text-slate-600">Order</TableHead>
+                <TableHead className="px-5 py-4 text-slate-600">Shipping Address</TableHead>
+                <TableHead className="px-5 py-4 text-slate-600">Method</TableHead>
+                <TableHead className="px-5 py-4 text-slate-600">Status</TableHead>
+                <TableHead className="px-5 py-4 text-right text-slate-600">Amount</TableHead>
+              </TableRow>
+            </TableHeader>
 
-  //              <h1 className="text-3xl font-bold tracking-tight text-slate-950 sm:text-4xl">
-  //                Review your order
-  //              </h1>
-  //            </div>
+            <TableBody>
+              {orders.map((order) => {
+                const paymentStatus = order.isPaid ? 'Paid' : 'Pending';
 
-  //            <button
-  //              onClick={() => clearMutation.mutate()}
-  //              disabled={clearMutation.isPending}
-  //              className="flex items-center gap-2 rounded-lg border border-red-200 bg-red-50 px-4 py-2.5 font-medium text-red-600 transition-all duration-200 hover:border-red-500 hover:bg-red-500 hover:text-white active:scale-95 disabled:cursor-not-allowed disabled:opacity-50"
-  //            >
-  //              <FaTrash className="text-sm" />
+                return (
+                  <TableRow key={order._id} className="hover:bg-slate-50">
+                    <TableCell className="px-5 py-4 font-semibold text-slate-900">
+                      #{order.id || order._id.slice(-6)}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-slate-600">
+                      {order.shippingAddress?.city || 'N/A'}
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-slate-700">
+                      {order.paymentMethodType || 'Cash'}
+                    </TableCell>
+                    <TableCell className="px-5 py-4">
+                      <span
+                        className={`inline-flex rounded-full px-2.5 py-1 text-xs font-semibold ${
+                          order.isPaid
+                            ? 'bg-emerald-100 text-emerald-700 ring-1 ring-emerald-200'
+                            : 'bg-amber-100 text-amber-700 ring-1 ring-amber-200'
+                        }`}
+                      >
+                        {paymentStatus}
+                      </span>
+                    </TableCell>
+                    <TableCell className="px-5 py-4 text-right font-bold text-slate-900">
+                      {currencyFormatter.format(order.totalOrderPrice || 0)}
+                    </TableCell>
+                  </TableRow>
+                );
+              })}
+            </TableBody>
 
-  //              {clearMutation.isPending ? "Clearing..." : "Clear Cart"}
-  //            </button>
-
-  //          </div>
-
-  //          <div className="grid gap-6 lg:grid-cols-[1fr_360px]">
-
-  //            {/* Cart Items */}
-
-  //            <section
-  //              className="overflow-hidden rounded-xl border border-slate-200 bg-white shadow-sm"
-  //              aria-label="Cart items"
-  //            >
-  //              <div className="divide-y divide-slate-100">
-
-  //                {products.map((item) => {
-
-  //                  const isUpdating =
-  //                    updateMutation.isPending &&
-  //                    updateMutation.variables?.productId ===
-  //                    item.product._id;
-
-  //                  const isRemoving =
-  //                    removeMutation.isPending &&
-  //                    removeMutation.variables ===
-  //                    item.product._id;
-
-  //                  const isPending =
-  //                    isUpdating || isRemoving;
-
-  //                  return (
-  //                    <article
-  //                      key={item._id}
-  //                      className={`flex gap-4 p-4 sm:gap-6 sm:p-6 ${isPending ? "opacity-60" : ""
-  //                        }`}
-  //                    >
-
-  //                      {/* Product Image */}
-
-  //                      <Link
-  //                        href={`/products/${item.product._id}`}
-  //                        className="flex size-24 shrink-0 items-center justify-center rounded-lg bg-slate-50 sm:size-32"
-  //                      >
-  //                        <img
-  //                          src={item.product.imageCover}
-  //                          alt={item.product.title}
-  //                          className="size-full object-contain mix-blend-multiply"
-  //                        />
-  //                      </Link>
-
-  //                      <div className="flex min-w-0 flex-1 flex-col justify-between gap-4">
-
-  //                        {/* Product Info */}
-
-  //                        <div className="flex items-start justify-between gap-3">
-
-  //                          <div className="min-w-0">
-
-  //                            <p className="text-xs font-semibold uppercase tracking-wide text-emerald-600">
-  //                              {item.product.brand.name}
-  //                            </p>
-
-  //                            <Link
-  //                              href={`/products/${item.product._id}`}
-  //                              className="mt-1 block line-clamp-2 font-semibold text-slate-900 hover:text-emerald-600"
-  //                            >
-  //                              {item.product.title}
-  //                            </Link>
-
-  //                          </div>
-
-  //                          {/* Remove */}
-
-  //                          <button
-  //                            type="button"
-  //                            onClick={() =>
-  //                              removeProduct(
-  //                                item.product._id
-  //                              )
-  //                            }
-  //                            disabled={isPending}
-  //                            className="shrink-0 p-1 text-slate-400 transition hover:text-red-600 disabled:cursor-not-allowed"
-  //                            aria-label={`Remove ${item.product.title}`}
-  //                          >
-  //                            <Trash2 className="size-4" />
-  //                          </button>
-
-  //                        </div>
-  //                        <div className="flex flex-wrap items-center justify-between gap-3">
-  //                          <div className="flex items-center rounded-lg border border-slate-200">
-  //                            <button
-  //                              type="button"
-  //                              onClick={() =>
-  //                                updateQuantity(
-  //                                  item.product._id,
-  //                                  item.count - 1
-  //                                )
-  //                              }
-  //                              disabled={
-  //                                item.count <= 1 ||
-  //                                isPending
-  //                              }
-  //                              className="p-2 text-slate-500 transition hover:text-emerald-600 disabled:cursor-not-allowed disabled:opacity-40"
-  //                              aria-label="Decrease quantity"
-  //                            >
-  //                              <Minus className="size-4" />
-  //                            </button>
-  //                            <span
-  //                              className="min-w-8 text-center text-sm font-semibold text-slate-900"
-  //                              aria-label="Quantity"
-  //                            >
-  //                              {item.count}
-  //                            </span>
-  //                            <button
-  //                              type="button"
-  //                              onClick={() =>
-  //                                updateQuantity(
-  //                                  item.product._id,
-  //                                  item.count + 1
-  //                                )
-  //                              }
-  //                              disabled={isPending}
-  //                              className="p-2 text-slate-500 transition hover:text-emerald-600 disabled:cursor-not-allowed disabled:opacity-40"
-  //                              aria-label="Increase quantity"
-  //                            >
-  //                              <Plus className="size-4" />
-  //                            </button>
-
-  //                          </div>
-
-  //                          {/* Price */}
-
-  //                          <p className="font-bold text-slate-950">
-  //                            {(item.price * item.count).toFixed(2)} EGP
-  //                          </p>
-
-  //                        </div>
-  //                      </div>
-  //                    </article>
-  //                  );
-  //                })}
-
-  //              </div>
-  //            </section>
-
-  //            {/* Order Summary */}
-
-  //            <aside className="h-fit rounded-xl border border-slate-200 bg-white p-6 shadow-sm">
-
-  //              <h2 className="text-lg font-bold text-slate-950">
-  //                Order summary
-  //              </h2>
-
-  //              <div className="mt-6 space-y-3 border-b border-slate-100 pb-6 text-sm">
-
-  //                <div className="flex justify-between text-slate-600">
-  //                  <span>Subtotal</span>
-
-  //                  <span>
-  //                    {cart.data.totalCartPrice.toFixed(2)} EGP
-  //                  </span>
-  //                </div>
-
-  //                <div className="flex justify-between text-slate-600">
-  //                  <span>Delivery</span>
-
-  //                  <span className="font-medium text-emerald-600">
-  //                    Free
-  //                  </span>
-  //                </div>
-
-  //              </div>
-
-  //              <div className="flex justify-between pt-6 text-lg font-bold text-slate-950">
-  //                <span>Total</span>
-
-  //                <span>
-  //                  {cart.data.totalCartPrice.toFixed(2)} EGP
-  //                </span>
-  //              </div>
-
-  //              <Link  href={`/checkout/${initialCart.cartId}`}
-  //                className="mt-6 flex justify-center w-full rounded-lg bg-emerald-600 px-5 py-3 text-sm font-bold text-white transition hover:bg-emerald-700"
-  //              >
-  //                Proceed to checkout
-  //              </Link>
-
-  //              <Link
-  //                href="/products"
-  //                className="mt-4 block text-center text-sm font-semibold text-slate-600 hover:text-emerald-600"
-  //              >
-  //                Continue shopping
-  //              </Link>
-
-  //            </aside>
-  //          </div>
-  //        </div>
-  //      </main>
-  //   )
+            <TableFooter>
+              <TableRow className="bg-slate-50">
+                <TableCell colSpan={4} className="px-5 py-4 text-base font-bold text-slate-800">
+                  Total
+                </TableCell>
+                <TableCell className="px-5 py-4 text-right text-base font-black text-slate-900">
+                  {currencyFormatter.format(totalAmount)}
+                </TableCell>
+              </TableRow>
+            </TableFooter>
+          </Table>
+        </div>
+      </div>
+    </main>
+  );
 }

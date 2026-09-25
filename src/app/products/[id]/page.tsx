@@ -8,6 +8,7 @@ import ReviewsSection from '@/components/product/ReviewsSection';
 import { getProductReviews } from "@/services/reviewsApi";
 import AddBtn from '@/components/addBtn/AddBtn';
 import AddToWishList from '@/components/addBtn/AddToWishList';
+import AddQty from '@/components/addQty/AddQty';
 
 export default async function ProductDetails({ params }: { params: { id: string } }) {
 
@@ -54,6 +55,8 @@ export default async function ProductDetails({ params }: { params: { id: string 
                             <span>Out of Stock</span>
                         </div>
                     )}
+                    <AddQty prodId={product._id} />
+                    <span>{product.quantity}</span> Available
                     <hr />
                     <p className='text-gray-700 py-5'>{product.description}</p>
                     <div className='flex justify-between items-center bg-gray-200 rounded-2xl p-3'>
